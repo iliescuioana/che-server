@@ -2,7 +2,7 @@ name: Generate SBOM
 
 on:
   push:
-    branches: [sbom-testing]
+    branches: [sbom_testing] # TO DO: Remove
   release:
     types: [published]
   workflow_dispatch:
