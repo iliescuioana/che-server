@@ -48,8 +48,6 @@ jobs:
           distribution: ${{ env.JAVA_DISTRO }}
 
       - name: Generate sbom
-        env:
-          PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mvn org.cyclonedx:cyclonedx-maven-plugin:$PLUGIN_VERSION:$SBOM_TYPE -f "$PRODUCT_PATH/pom.xml"
 
