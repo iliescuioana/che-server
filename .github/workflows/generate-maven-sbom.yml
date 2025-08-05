@@ -1,8 +1,6 @@
 name: Generate Maven SBOM
 
 on:
-  push:
-    branches: [sbom_testing] # TO DO: Remove 
   release:
     types: [published]
   workflow_dispatch:
@@ -38,8 +36,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
-          ref: '38653393b201e77505cb1a2c008ddfb1a392d965'
-          # ref: ${{ steps.version.outputs.PROJECT_VERSION }}
+          ref: ${{ steps.version.outputs.PROJECT_VERSION }}
 
       - name: Setup Java SDK
         uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
@@ -56,3 +53,13 @@ jobs:
         with:
           name: sbom
           path: ${{ env.PRODUCT_PATH }}/target/bom.json
+  
+  store-sbom-data: # stores sbom and metadata in a predefined format for otterdog to pick up
+    needs: ['generate-sbom']
+    uses: eclipse-csi/workflows/.github/workflows/store-sbom-data.yml@main
+    with:
+      projectName: 'che-server'
+      projectVersion: ${{ needs.generate-sbom.outputs.project-version }}
+      bomArtifact: 'sbom'
+      bomFilename: 'bom.json'
+      parentProject: '1ab66138-685e-47bb-9020-feb6ca1fb40c'
